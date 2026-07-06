@@ -5,8 +5,6 @@ CrisisOps AI is a production-grade, highly secure, full-stack disaster managemen
 
 The platform coordinates a mesh of seven autonomous AI agents leveraging the modern **Google GenAI Python SDK** and Gemini, allowing local emergency dispatch teams to instantly analyze disasters, run storm risk modeling, optimize tactical rescue asset assignments, and broadcast warnings.
 
----
-
 ## 🏗️ System Architecture & Workflow
 
 ```
@@ -47,8 +45,6 @@ The platform coordinates a mesh of seven autonomous AI agents leveraging the mod
                         └───────────────────────────┘
 ```
 
----
-
 ## 🌟 Key Features
 
 ### 1. Situational Command Center
@@ -69,15 +65,11 @@ The platform coordinates a mesh of seven autonomous AI agents leveraging the mod
 - **Key Vault Status Panel**: Tracks Secret Manager integration (CORS, Rate Limiter buckets).
 - **Live Security Audit Ledger**: Chronological trail logging connections, IP markers, and action elevations.
 
----
-
 ## 🛠️ Technology Stack
 
 - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS (v4), Framer Motion (`motion/react`), Lucide Icons, Recharts.
 - **Backend**: Node.js, Express (serving assets, proxying Gemini, parsing CORS rules).
 - **AI Engine**: Google Gemini 3.5 Flash utilizing the `@google/genai` TypeScript SDK and strict `responseSchema` JSON configurations.
-
----
 
 ## ⚙️ Installation & Local Setup
 
@@ -108,8 +100,6 @@ npm run build
 # Start the production environment
 npm run start
 ```
-
----
 
 ## 📡 Google ADK & Gemini API Usage
 
@@ -144,8 +134,6 @@ response = client.models.generate_content(
 )
 ```
 
----
-
 ## 🤝 Contributing
 Contributions, issues, and feature requests are welcome!
 Feel free to check the [issues page](https://github.com/Tanya-garg10/CrisisOps-AI-Multi-Agent-Disaster-Response-Coordination-Platform/issues) if you want to contribute.
@@ -154,4 +142,4 @@ Feel free to check the [issues page](https://github.com/Tanya-garg10/CrisisOps-A
 This project is open-source and available under the MIT License.
 
 ## 👥 Author
-- **Tanya Garg** - *Creator & Lead Developer* - [GitHub Profile](https://github.com/Tanya-garg10)
+- **Tanya Garg** - *Creator & Lead Developer* 
