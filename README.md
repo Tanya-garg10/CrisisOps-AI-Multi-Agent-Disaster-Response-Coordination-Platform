@@ -1,0 +1,159 @@
+# CrisisOps AI 🛰️
+### Multi-Agent Disaster Response Coordination Platform
+
+CrisisOps AI is a production-grade, highly secure, full-stack disaster management command center built for the **Kaggle Competition: "AI Agents: Intensive Vibe Coding Capstone Project"**. 
+
+The platform coordinates a mesh of seven autonomous AI agents leveraging the modern **Google GenAI `@google/genai` TypeScript SDK** and Gemini, allowing local emergency dispatch teams to instantly analyze disasters, run storm risk modeling, optimize tactical rescue asset assignments, and broadcast warnings.
+
+---
+
+## 🏗️ System Architecture & Workflow
+
+```
+                        [ CITIZEN / DISPATCH REPORT ]
+                                      │
+                                      ▼
+                        ┌───────────────────────────┐
+                        │   Express API Ingestion   │ (Secure CORS & Rate Limiter)
+                        └─────────────┬─────────────┘
+                                      │
+                                      ▼
+                        ┌───────────────────────────┐
+                        │   Commander Agent (Hub)   │ (Orchestrates ADK mesh)
+                        └──────┬──────┬──────┬──────┘
+                               │      │      │
+           ┌───────────────────┘      │      └───────────────────┐
+           ▼                          ▼                          ▼
+┌──────────────────────┐   ┌──────────────────────┐   ┌──────────────────────┐
+│  Incident Analysis   │   │    Weather Intel     │   │   Resource Manager   │
+│  - Geocoding Extract │   │  - Radar sweeps      │   │  - Station metrics   │
+│  - Severity Grading  │   │  - Flood risk bounds │   │  - Dispatch latency  │
+└──────────┬───────────┘   └──────────┬───────────┘   └──────────┬───────────┘
+           │                          │                          │
+           └───────────────────┐      │      ┌───────────────────┘
+                               ▼      ▼      ▼
+                        ┌───────────────────────────┐
+                        │  Planning Agent (Tactical)│ (Resource matching index)
+                        └─────────────┬─────────────┘
+                                      │
+                                      ▼
+                        ┌─────────────┴─────────────┐
+                        │    Communication Agent    │ (EAS alerts & SMS logs)
+                        └─────────────┬─────────────┘
+                                      │
+                                      ▼
+                        ┌─────────────┴─────────────┐
+                        │  Report Generation Agent  │ (Executive Markdown briefings)
+                        └───────────────────────────┘
+```
+
+---
+
+## 🌟 Key Features
+
+### 1. Situational Command Center
+- **Interactive Vector Tactical Map**: A responsive coordinate grid mapping out Cascadia Sector 4, featuring real-time coordinate tracking, click-to-pin geocoding, thermal hazards, and overlay toggles (Precipitation Radar & Medevac Aviation corridors).
+- **Active Disaster Command Log**: Track historical, reported, and active emergencies with live severity chips.
+- **Deep Situational Dossier**: View full threat parameters, medical evacuation milestones, and live status.
+
+### 2. Autonomous Multi-Agent Mesh
+- Visualizes **7 Cooperative AI Agents** working in sync.
+- Interactive **Agent Communication Bus Console** displaying step-by-step thinking processes, task delegations, meteorological risk evaluations, and logistics routing alerts.
+
+### 3. AI-Powered Asset Dispatch
+- Monitor live capacity bars for station resources (Ambulances, Search & Rescue Squads, Heavy Plant, lifeFlight Medevacs, and Bed Space).
+- Dynamic recommenders and click-to-dispatch allocation updating the crisis chronological timeline immediately.
+
+### 4. Enterprise Security & Audit
+- **Role-Based Access Control (RBAC)**: Supports `COMMANDER` (full operational authority), `DISPATCHER` (alerts and logistics), and `FIELD_RESPONDER` (read-only command HUD) authentication roles.
+- **Key Vault Status Panel**: Tracks Secret Manager integration (CORS, Rate Limiter buckets).
+- **Live Security Audit Ledger**: Chronological trail logging connections, IP markers, and action elevations.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS (v4), Framer Motion (`motion/react`), Lucide Icons, Recharts.
+- **Backend**: Node.js, Express (serving assets, proxying Gemini, parsing CORS rules).
+- **AI Engine**: Google Gemini 3.5 Flash utilizing the `@google/genai` TypeScript SDK and strict `responseSchema` JSON configurations.
+
+---
+
+## ⚙️ Installation & Local Setup
+
+### 1. Environment Variables
+Clone `.env.example` into a local `.env` file:
+```env
+# Required for Gemini AI SDK
+GEMINI_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY"
+
+# Self-referential URL for callbacks
+APP_URL="http://localhost:3000"
+```
+
+### 2. Install & Start Development Server
+```bash
+# Install initial packages
+npm install
+
+# Run the full-stack development environment (Port 3000)
+npm run dev
+```
+
+### 3. Production Build
+```bash
+# Build React static assets and bundle server.ts via esbuild
+npm run build
+
+# Start the production environment
+npm run start
+```
+
+---
+
+## 📡 Google ADK & Gemini API Usage
+
+CrisisOps AI utilizes the modern `@google/genai` SDK on the backend server (`/server.ts`) to parse, assess, and summarize incoming reports. 
+
+Below is our **strict response schema configuration** that guarantees structure and eliminates parser crashing:
+
+```typescript
+const response = await ai.models.generateContent({
+  model: "gemini-3.5-flash",
+  contents: promptString,
+  config: {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: Type.OBJECT,
+      properties: {
+        aiSummary: { type: Type.STRING },
+        primaryResponse: { type: Type.STRING },
+        requiredResources: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              type: { type: Type.STRING },
+              quantity: { type: Type.INTEGER }
+            },
+            required: ["type", "quantity"]
+          }
+        },
+        safetyPrecautions: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING }
+        },
+        priorityLevel: { type: Type.INTEGER }
+      },
+      required: ["aiSummary", "primaryResponse", "requiredResources", "safetyPrecautions", "priorityLevel"]
+    }
+  }
+});
+```
+
+---
+
+## 🏆 Kaggle Competition Credentials
+- **Project Name**: CrisisOps AI
+- **Category**: AI Agents & Vibe Coding Capstone Project
+- **Demonstrated Criteria**: Google ADK, MCP Tooling Design, Autonomous Agent Orchestration, Cyber Security Auditing, Full-Stack Portability.

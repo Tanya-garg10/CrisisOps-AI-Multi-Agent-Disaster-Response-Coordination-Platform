@@ -1,0 +1,53 @@
+name: Deploy CrisisOps AI to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Google Cloud Auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Build and Push Backend
+        run: |
+          gcloud auth configure-docker
+          docker build -t gcr.io/$PROJECT_ID/crisisops-backend ./backend
+          docker push gcr.io/$PROJECT_ID/crisisops-backend
+
+      - name: Deploy Backend to Cloud Run
+        run: |
+          gcloud run deploy crisisops-backend \
+            --image gcr.io/$PROJECT_ID/crisisops-backend \
+            --platform managed \
+            --region $REGION \
+            --allow-unauthenticated \
+            --set-env-vars="GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}"
+
+      - name: Build and Push Frontend
+        run: |
+          docker build -t gcr.io/$PROJECT_ID/crisisops-frontend ./frontend
+          docker push gcr.io/$PROJECT_ID/crisisops-frontend
+
+      - name: Deploy Frontend to Cloud Run
+        run: |
+          gcloud run deploy crisisops-frontend \
+            --image gcr.io/$PROJECT_ID/crisisops-frontend \
+            --platform managed \
+            --region $REGION \
+            --allow-unauthenticated
