@@ -113,47 +113,41 @@ npm run start
 
 ## 📡 Google ADK & Gemini API Usage
 
-CrisisOps AI utilizes the modern `@google/genai` SDK on the backend server (`/server.ts`) to parse, assess, and summarize incoming reports. 
+CrisisOps AI utilizes the modern `google-genai` Python SDK on the backend to parse, assess, and summarize incoming reports. 
 
-Below is our **strict response schema configuration** that guarantees structure and eliminates parser crashing:
+Below is our **strict response schema configuration** that guarantees structure and eliminates parser crashing using Pydantic:
 
-```typescript
-const response = await ai.models.generateContent({
-  model: "gemini-3.5-flash",
-  contents: promptString,
-  config: {
-    responseMimeType: "application/json",
-    responseSchema: {
-      type: Type.OBJECT,
-      properties: {
-        aiSummary: { type: Type.STRING },
-        primaryResponse: { type: Type.STRING },
-        requiredResources: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              type: { type: Type.STRING },
-              quantity: { type: Type.INTEGER }
-            },
-            required: ["type", "quantity"]
-          }
-        },
-        safetyPrecautions: {
-          type: Type.ARRAY,
-          items: { type: Type.STRING }
-        },
-        priorityLevel: { type: Type.INTEGER }
-      },
-      required: ["aiSummary", "primaryResponse", "requiredResources", "safetyPrecautions", "priorityLevel"]
-    }
-  }
-});
+```python
+from google import genai
+from google.genai import types
+from pydantic import BaseModel, Field
+
+class ResourceRequirement(BaseModel):
+    resource_type: str
+    quantity: int
+
+class IncidentAssessment(BaseModel):
+    ai_summary: str
+    primary_response: str
+    required_resources: list[ResourceRequirement]
+    safety_precautions: list[str]
+    priority_level: int = Field(description="1 to 5 priority level")
+
+client = genai.Client()
+response = client.models.generate_content(
+    model='gemini-2.5-flash',
+    contents=prompt_string,
+    config=types.GenerateContentConfig(
+        response_mime_type="application/json",
+        response_schema=IncidentAssessment,
+    ),
+)
 ```
 
 ---
 
 ## 🏆 Kaggle Competition Credentials
 - **Project Name**: CrisisOps AI
+- **Author**: Tanya Garg
 - **Category**: AI Agents & Vibe Coding Capstone Project
 - **Demonstrated Criteria**: Google ADK, MCP Tooling Design, Autonomous Agent Orchestration, Cyber Security Auditing, Full-Stack Portability.
