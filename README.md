@@ -1,9 +1,9 @@
 # CrisisOps AI 🛰️
 ### Multi-Agent Disaster Response Coordination Platform
 
-CrisisOps AI is a production-grade, highly secure, full-stack disaster management command center built for the **Kaggle Competition: "AI Agents: Intensive Vibe Coding Capstone Project"**. 
+CrisisOps AI is a production-grade, highly secure, full-stack disaster management command center.
 
-The platform coordinates a mesh of seven autonomous AI agents leveraging the modern **Google GenAI `@google/genai` TypeScript SDK** and Gemini, allowing local emergency dispatch teams to instantly analyze disasters, run storm risk modeling, optimize tactical rescue asset assignments, and broadcast warnings.
+The platform coordinates a mesh of seven autonomous AI agents leveraging the modern **Google GenAI Python SDK** and Gemini, allowing local emergency dispatch teams to instantly analyze disasters, run storm risk modeling, optimize tactical rescue asset assignments, and broadcast warnings.
 
 ---
 
@@ -146,8 +146,12 @@ response = client.models.generate_content(
 
 ---
 
-## 🏆 Kaggle Competition Credentials
-- **Project Name**: CrisisOps AI
-- **Author**: Tanya Garg
-- **Category**: AI Agents & Vibe Coding Capstone Project
-- **Demonstrated Criteria**: Google ADK, MCP Tooling Design, Autonomous Agent Orchestration, Cyber Security Auditing, Full-Stack Portability.
+## 🤝 Contributing
+Contributions, issues, and feature requests are welcome!
+Feel free to check the [issues page](https://github.com/Tanya-garg10/CrisisOps-AI-Multi-Agent-Disaster-Response-Coordination-Platform/issues) if you want to contribute.
+
+## 📝 License
+This project is open-source and available under the MIT License.
+
+## 👥 Author
+- **Tanya Garg** - *Creator & Lead Developer* - [GitHub Profile](https://github.com/Tanya-garg10)
