@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Ensure parent directory (project root) is in path so 'database' module is found
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
