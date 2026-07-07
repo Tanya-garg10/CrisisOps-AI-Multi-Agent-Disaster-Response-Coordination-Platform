@@ -103,7 +103,7 @@ export default function MultiAgentChatArena({
   useEffect(() => {
     const checkApi = async () => {
       try {
-        const res = await fetch("/api/health");
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/health`);
         const data = await res.json();
         setApiConnected(data.apiConnected);
       } catch (e) {
@@ -145,7 +145,7 @@ export default function MultiAgentChatArena({
 
     // Send the query to server-side `/api/chat`
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

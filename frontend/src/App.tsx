@@ -245,7 +245,7 @@ export default function App() {
 
     try {
       // Direct post request to the custom backend which triggers Gemini assessment!
-      const res = await fetch("/api/incidents", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/incidents`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
