@@ -13,6 +13,7 @@ from google import genai
 
 from database import models, session
 from database.session import engine, get_db
+from agents.orchestrator import commander
 
 # Pydantic models for chat
 class ChatRequest(BaseModel):
@@ -46,7 +47,7 @@ def get_incidents(db: Session = Depends(get_db)):
     return db.query(models.Incident).all()
 
 @app.post("/api/incidents")
-def create_incident(incident_data: Dict[str, Any], db: Session = Depends(get_db)):
+def create_incident(incident_data: Dict[str, Any], background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     incident = models.Incident(
         title=incident_data.get("title", "Unknown Incident"),
         description=incident_data.get("description", ""),
@@ -58,8 +59,44 @@ def create_incident(incident_data: Dict[str, Any], db: Session = Depends(get_db)
     db.commit()
     db.refresh(incident)
     # Trigger agents in background
-    # background_tasks.add_task(process_incident_with_agents, incident.id)
+    background_tasks.add_task(process_incident_with_agents, incident.id)
     return incident
+
+def process_incident_with_agents(incident_id: int):
+    # Create a new session for the background task
+    db = next(get_db())
+    try:
+        incident = db.query(models.Incident).filter(models.Incident.id == incident_id).first()
+        if not incident:
+            return
+            
+        incident_data = {
+            "title": incident.title,
+            "description": incident.description,
+            "severity": incident.severity,
+            "emergency_type": incident.emergency_type,
+            "victims": incident.victims
+        }
+        
+        result = commander.handle_incident(incident_data)
+        
+        # Save AI recommendations back to incident
+        if "plan" in result and "action_plan" in result["plan"]:
+            incident.ai_recommendation = result["plan"]["action_plan"]
+            
+        # Compile a summary from all agents
+        summary = (
+            f"Weather: {result.get('weather', {}).get('weather_condition', 'Unknown')}. "
+            f"Resources needed: {len(result.get('resources', {}).get('recommended_resources', []))} items."
+        )
+        incident.ai_summary = summary
+        incident.status = "Assessing"
+        
+        db.commit()
+    except Exception as e:
+        print(f"Error processing incident {incident_id} with AI agents: {e}")
+    finally:
+        db.close()
 
 @app.get("/api/resources")
 def get_resources(db: Session = Depends(get_db)):
